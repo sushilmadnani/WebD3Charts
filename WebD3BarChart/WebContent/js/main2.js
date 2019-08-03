@@ -1,6 +1,7 @@
 /*
-*    main1.js
+*    main2.js
 *    Mastering Data Visualization with D3.js
+*    Project 1 - Star Break Coffee
 */
 
 var margin = {left:150, right:10, top:10, bottom:150};
@@ -22,7 +23,7 @@ g.append("text")
     .attr("y", height + 140)
     .attr("font-size", "20px")
     .attr("text-anchor", "middle")
-    .text("The word's tallest buildings");
+    .text("Month");
 
 // Y Label
 g.append("text")
@@ -32,9 +33,9 @@ g.append("text")
     .attr("font-size", "20px")
     .attr("text-anchor", "middle")
     .attr("transform", "rotate(-90)")
-    .text("Height (m)");
+    .text("Revenue");
 
-d3.json("./data/buildings.json").then(function(data){
+d3.json("./data/revenues.json").then(function(data){
 	
 /*	data.forEach(function(d){
  		d.height = +d.height;
@@ -43,7 +44,7 @@ d3.json("./data/buildings.json").then(function(data){
 	
 	var x = d3.scaleBand()
 	.domain(data.map(function(d){
-		return d.name;
+		return d.month;
 	}))
 	.range([0, width])
 	.paddingInner(0.3)
@@ -51,7 +52,7 @@ d3.json("./data/buildings.json").then(function(data){
 	
 	var y = d3.scaleLinear()
 			.domain([0, d3.max(data, function(d){
-				return +d.height;
+				return +d.revenue;
 			})])
 			.range([height, 0]);	
 	
@@ -59,16 +60,11 @@ d3.json("./data/buildings.json").then(function(data){
 	g.append("g")
 		.attr("class", "x axis")
 		.attr("transform", "translate(0, "+ height +")")
-		.call(xAxisCall)
-		.selectAll("text")
-			.attr("y", "10")
-			.attr("x", "-5")
-			.attr("text-anchor", "end")
-			.attr("transform", "rotate(-40)");
+		.call(xAxisCall);
 	
 	var yAxisCall = d3.axisLeft(y)
-		.ticks(3)
-		.tickFormat((d) => d + "m");
+		.ticks(9)
+		.tickFormat((d) => "$" + d);
 	
 	g.append("g")
 		.attr("class", "y axis")
@@ -78,9 +74,9 @@ d3.json("./data/buildings.json").then(function(data){
 	.data(data)
 	.enter()
 	.append("rect")
-	.attr("x", (d) => x(d.name))
-	.attr("y", (d) => y(+d.height))
-	.attr("height", (d) => height - y(+d.height))
+	.attr("x", (d) => x(d.month))
+	.attr("y", (d) => y(+d.revenue))
+	.attr("height", (d) => height - y(+d.revenue))
 	.attr("width", (d) => x.bandwidth())
 	.attr("fill", "grey");
 		
