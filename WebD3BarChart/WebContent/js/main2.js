@@ -9,6 +9,10 @@ var margin = {left:150, right:10, top:10, bottom:150};
 var width = 600 - margin.left - margin.right;
 var height = 400 - margin.top - margin.bottom;
 
+var flag = true;
+
+var t = d3.transition().attr("duration", 750);
+
 var svg = d3.select("#chart-area").append("svg")
 		.attr("width", width + margin.left + margin.right)
 		.attr("height", height + margin.top + margin.bottom);
@@ -36,23 +40,23 @@ var yAxisGroup = g.append("g")
 		.range([height, 0]);	
 	
 	//X Label
-	g.append("text")
-	    .attr("class", "x axis-label")
-	    .attr("x", width / 2)
-	    .attr("y", height + 60)
-	    .attr("font-size", "20px")
-	    .attr("text-anchor", "middle")
-	    .text("Month");
+	var xLabel = g.append("text")
+		    .attr("class", "x axis-label")
+		    .attr("x", width / 2)
+		    .attr("y", height + 60)
+		    .attr("font-size", "20px")
+		    .attr("text-anchor", "middle")
+		    .text("Month");
 	
 	// Y Label
-	g.append("text")
-	    .attr("class", "y axis-label")
-	    .attr("x", - (height / 2))
-	    .attr("y", -60)
-	    .attr("font-size", "20px")
-	    .attr("text-anchor", "middle")
-	    .attr("transform", "rotate(-90)")
-	    .text("Revenue");
+	var yLabel = g.append("text")
+		    .attr("class", "y axis-label")
+		    .attr("x", - (height / 2))
+		    .attr("y", -60)
+		    .attr("font-size", "20px")
+		    .attr("text-anchor", "middle")
+		    .attr("transform", "rotate(-90)")
+		    .text("Revenue");
 	
 	
 	d3.json("./data/revenues.json").then(function(data){
@@ -64,47 +68,65 @@ var yAxisGroup = g.append("g")
 		update(data);
 	
 		d3.interval(function(){
-			update(data);
+			var newData = flag ? data : data.slice(1);
+			update(newData);
+			flag = !flag;
 		}, 1000);
 	}).catch (function(error) {
 		console.log(error);
 	});
 
 function update(data) {
+	
+	var value = flag ? "revenue" : "profit";
+	
 	x.domain(data.map((d) => d.month));
-	y.domain([0, d3.max(data, (d) => +d.revenue)]);
+	y.domain([0, d3.max(data, (d) => +d[value])]);
 	
 	// X Axis
 	var xAxisCall = d3.axisBottom(x);
-		xAxisGroup.call(xAxisCall);
+		xAxisGroup.transition(t).call(xAxisCall);
 	
 	// Y Axis
 	var yAxisCall = d3.axisLeft(y)
 		.ticks(9)
 		.tickFormat((d) => "$" + d);
-		yAxisGroup.call(yAxisCall);
+		yAxisGroup.transition(t).call(yAxisCall);
 	
 	// JOIN new data with old elements.	
 	var rects = g.selectAll("rect")
-		.data(data);
+		.data(data, (d) => d.month);
 	
 	// Exit old elements not present in new data.
-	rects.exit().remove();
+	rects.exit()
+			.attr("fill", "red")
+		.transition(t)
+			.attr("y", y(0))
+			.attr("height", 0)
+		.remove();
 	
 	// UPDATE old elements present in new data.
-	rects
-		.attr("x", (d) => x(d.month))
-		.attr("y", (d) => y(+d.revenue))
-		.attr("height", (d) => height - y(+d.revenue))
-		.attr("width", (d) => x.bandwidth())
-		.attr("fill", "black");
+	rects.transition(t)
+		
+		.attr("y", (d) => y(+d[value]))
+		
+		
 	
 	// Enter new elements present in new data.
 	rects.enter()
-		.append("rect")
-		.attr("x", (d) => x(d.month))
-		.attr("y", (d) => y(+d.revenue))
-		.attr("height", (d) => height - y(+d.revenue))
-		.attr("width", (d) => x.bandwidth())
-		.attr("fill", "black");
+			.append("rect")
+			.attr("x", (d) => x(d.month))		
+			.attr("width", (d) => x.bandwidth())
+			.attr("fill", "black")
+			.attr("y", y(0))
+			.attr("height", 0)
+		.merge(rects)
+		.transition(t)
+			.attr("y", (d) => y(+d[value]))
+			.attr("height", (d) => height - y(+d[value]))
+			.attr("width", (d) => x.bandwidth())
+			.attr("x", (d) => x(d.month));		
+	
+	var label = flag ? "Revenue" : "Profit";
+	yLabel.text(label);
 }
