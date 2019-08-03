@@ -105,9 +105,7 @@ function update(data) {
 			.attr("height", 0)
 		.remove();
 	
-	// UPDATE old elements present in new data.
-	rects.transition(t)	
-		.attr("y", (d) => y(+d[value]))
+	
 
 	// Enter new elements present in new data.
 	rects.enter()
@@ -117,6 +115,7 @@ function update(data) {
 			.attr("fill", "black")
 			.attr("y", y(0))
 			.attr("height", 0)
+		// UPDATE old elements present in new data.
 		.merge(rects)
 		.transition(t)
 			.attr("y", (d) => y(+d[value]))
