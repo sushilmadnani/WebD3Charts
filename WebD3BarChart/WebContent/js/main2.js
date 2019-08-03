@@ -106,12 +106,9 @@ function update(data) {
 		.remove();
 	
 	// UPDATE old elements present in new data.
-	rects.transition(t)
-		
+	rects.transition(t)	
 		.attr("y", (d) => y(+d[value]))
-		
-		
-	
+
 	// Enter new elements present in new data.
 	rects.enter()
 			.append("rect")
