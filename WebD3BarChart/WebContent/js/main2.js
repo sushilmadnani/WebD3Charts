@@ -20,7 +20,7 @@ var g = svg.append("g")
 g.append("text")
     .attr("class", "x axis-label")
     .attr("x", width / 2)
-    .attr("y", height + 140)
+    .attr("y", height + 60)
     .attr("font-size", "20px")
     .attr("text-anchor", "middle")
     .text("Month");
