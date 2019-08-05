@@ -162,7 +162,7 @@ $("continent-select")
 	});
 
 $(function() {
-    $( "#date-slider" ).slider({
+    $("#date-slider").slider({
 		max: 2014,
 		min: 1800,
 		step: 1,
