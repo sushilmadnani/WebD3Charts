@@ -181,8 +181,7 @@ function step() {
 
 function update(data) {
     // Standard transition time for the visualization
-    var t = d3.transition()
-        .duration(100);
+    var t = function(){ return d3.transition().duration(100); }
 
     var continent = $("#continent-select").val();
     

@@ -11,7 +11,7 @@ var height = 400 - margin.top - margin.bottom;
 
 var flag = true;
 
-var t = d3.transition().attr("duration", 750);
+var t = function(){ return d3.transition().duration(750); }
 
 var svg = d3.select("#chart-area").append("svg")
 		.attr("width", width + margin.left + margin.right)
