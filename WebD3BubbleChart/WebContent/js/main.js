@@ -161,15 +161,17 @@ $("continent-select")
 		update(formattedData[time]);
 	});
 
-$("date-slider").slider({
-	max: 2014,
-	min: 1800,
-	step: 1,
-	slide: function(event, ui){
-		time = ui.value - 1800;
-		update(formattedData[time]);
-	}
-});
+$(function() {
+    $( "#date-slider" ).slider({
+		max: 2014,
+		min: 1800,
+		step: 1,
+		slide: function(event, ui){
+			time = ui.value - 1800;
+			update(formattedData[time]);
+		}
+	});
+ });
 
 function step() {
 	 // At the end of our data, loop back
