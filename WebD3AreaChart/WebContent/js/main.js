@@ -3,10 +3,14 @@
 *    Mastering Data Visualization with D3.js
 */
 
-    var svg = d3.select("svg"),
-        margin = {top: 20, right: 20, bottom: 30, left: 50},
-        width = +svg.attr("width") - margin.left - margin.right,
-        height = +svg.attr("height") - margin.top - margin.bottom;
+	var margin = {left:50, right:20, top:20, bottom:30};
+
+	var width = 500 - margin.left - margin.right;
+	var height = 300 - margin.top - margin.bottom;
+	
+	var svg = d3.select("#chart-area").append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom);
 
     var g = svg.append("g")
     		.attr("transform", "translate(" + margin.left + 
